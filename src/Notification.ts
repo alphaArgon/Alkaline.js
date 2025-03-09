@@ -37,12 +37,15 @@ type _Existential = {
     //  The innermost map is the record for a specific pair of notification name and sender. The
     //  value is the function to be called; the key is the identifier of the receiver, which coul
     //  be the observer object or a generated token, and will be used as `this` of the call.
-    observations: WeakMap<object /* sender */, Map<NotificationName<any>, Map<any /* receiver or weak */, Function>>>;
+    observations: WeakMap<object /* sender */, Map<NotificationName<any>, Map<any /* receiver or weak */, [Function, number /* order */]>>>;
 
     //  Multiple `WeakRef`s pointing to the same object are not allowed, so we cache them.
     //  The key and the value have a circular reference, but it’s OK since they are both weak.
     //  `null` means do not use weak observer references.
     weakRefs: WeakMap<object, WeakRef<object>> | null;
+
+    //  The number of `addObserver` calls so far.
+    counter: number;
 }
 
 
@@ -64,6 +67,7 @@ export class NotificationCenter {
         this[$] = {
             observations: new WeakMap(),
             weakRefs: weakObservers ? new WeakMap() : null,
+            counter: 0,
         };
     }
 
@@ -89,7 +93,11 @@ export class NotificationCenter {
       * 
       * The provided sender is always unretained. The observer is retained and you must manually
       * remove it when it is no longer needed, unless `areObserversWeaklyReferenced` is `true`, in
-      * which case the observer is cleaned up on the next notification post. */
+      * which case the observer is cleaned up on the next notification post. If you don’t provide
+      * a sender or provide `null`, all notifications of the given name will be observed.
+      * 
+      * If you add the same observer to the same name and sender for multiple times, an error will
+      * be thrown. */
     public addObserver<T extends object, UserInfo>(receiver: T, selector: Selector<T>, name: NotificationName<UserInfo>, sender?: object | null): void {
         let body = receiver[selector];
 
@@ -150,20 +158,35 @@ export class NotificationCenter {
         sender ??= null;  //  Do not expose `_anySender` to the outside.
         let notification = Object.freeze({name, sender, userInfo});
 
-        sender ??= _anySender;
-        _postNotification(this[$], notification, sender);
+        let observations = [] as {action: Function, receiver: any, order: number}[];
 
-        if (sender !== _anySender) {
-            //  If a receiver observes both on a specific sender and on null, the notification will
-            //  be sent twice. This is somewhat confusing, but Cocoa’s NSNotificationCenter sends
-            //  twice too, so we do the same.
-            _postNotification(this[$], notification, _anySender);
+        //  First collect observations for any sender.
+        _collectObservations(this[$], name, _anySender, observations);
+
+        //  Then, if the sender is specified, collect observations for the specified sender.
+        if (sender !== null) {
+            _collectObservations(this[$], name, sender, observations);
+        }
+
+        //  Sort observations by order (the order of addition).
+        observations.sort((a, b) => a.order - b.order);
+
+        //  TODO: The thrown error is discarded and only visible in the console.
+        //  Should the error be rethrown? — No, the sender don’t know and has no way to handle it.
+        //  For now, we just log the error.
+
+        for (let {action, receiver} of observations) {
+            try {
+                action.call(receiver, notification);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 }
 
 
-//  The following functions take care of weak references by themselves.
+//  The following functions take care of weak references. The caller just passes the receiver as is.
 
 
 function _addObservation(ext: _Existential, name: NotificationName<any>, sender: object, receiver: any, action: Function) {
@@ -177,8 +200,10 @@ function _addObservation(ext: _Existential, name: NotificationName<any>, sender:
         observation.set(name, receivers = new Map());
     }
 
+    let reveiverOrWeak: any;
+
     if (ext.weakRefs === null) {
-        receivers.set(receiver, action);
+        reveiverOrWeak = receiver;
 
     } else {
         let weak = ext.weakRefs.get(receiver);
@@ -187,8 +212,14 @@ function _addObservation(ext: _Existential, name: NotificationName<any>, sender:
             ext.weakRefs.set(receiver, weak);
         }
 
-        receivers.set(weak, action);
+        reveiverOrWeak = weak;
     }
+
+    if (receivers.has(reveiverOrWeak)) {
+        throw new Error("The observer has already been added to the same name and sender.");
+    }
+
+    receivers.set(reveiverOrWeak, [action, ext.counter++]);
 }
 
 
@@ -219,39 +250,43 @@ function _removeObservation(ext: _Existential, name: NotificationName<any>, send
 }
 
 
-function _postNotification(ext: _Existential, notification: Notification<any>, sender: object): void {
+/** Collects all observations for the given name and sender. If a weak reference lost its target,
+  * the observation is removed. */
+function _collectObservations(ext: _Existential, name: NotificationName<any>, sender: object, into: {action: Function, receiver: any, order: number}[]): void {
     let observation = ext.observations.get(sender);
     if (observation === undefined) {return;}
 
-    let receivers = observation.get(notification.name);
+    let receivers = observation.get(name);
     if (receivers === undefined) {return;}
 
-    //  Receivers might be removed during the iteration.
-    let entries = [...receivers.entries()];
-
-    //  TODO: The thrown error is discarded and only visible in the console.
-    //  Should the error be rethrown?
-
     if (ext.weakRefs === null) {
-        for (let [receiver, action] of entries) {
-            try {
-                action.call(receiver, notification);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+        let observations = Array.from(receivers, ([receiver, [action, order]]) => ({action, receiver, order}));
+        Array.prototype.push.apply(into, observations);
+        return;
+    }
 
-    } else {
-        for (let [weak, action] of entries) {
-            let receiver = weak.deref();
+    let clean = [] as WeakRef<any>[];
 
-            if (receiver === undefined) {
-                receivers.delete(weak);
-            } else try {
-                action.call(receiver, notification);
-            } catch (error) {
-                console.error(error);
-            }
+    for (let [weak, [action, order]] of receivers) {
+        let receiver = weak.deref();
+
+        if (receiver === undefined) {
+            clean.push(weak);
+        } else {
+            into.push({action, receiver, order});
         }
+    }
+
+    for (let weak of clean) {
+        receivers.delete(weak);
+    }
+
+    if (receivers.size === 0) {
+        observation.delete(name);
+    }
+
+    //  We don’t need to remove `_anySender`.
+    if (sender !== _anySender && observation.size === 0) {
+        ext.observations.delete(sender);
     }
 }
