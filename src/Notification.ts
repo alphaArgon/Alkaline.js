@@ -10,7 +10,7 @@ import type { Selector } from "./Base";
 
 
 declare const subtype: unique symbol;
-export type NotificationName<UserInfo = void> = string & {[subtype]?: UserInfo};
+export type NotificationName<UserInfo = void> = (string | symbol) & {[subtype]?: UserInfo};
 
 
 export type Notification<UserInfo = void> = {
