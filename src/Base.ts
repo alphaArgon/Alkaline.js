@@ -13,6 +13,10 @@ import { arrayEquals } from "./Array";
 //  MARK: - Equatability
 
 
+/** Used by `ValueOfEquatable` interface to identify the type of the receiver. */
+export const valueOfSpecies = Symbol("valueOfSpecies");
+
+
 /** A interface for a custom object to define its own equality check. */
 export interface CustomEquatable {
 
@@ -22,41 +26,82 @@ export interface CustomEquatable {
 }
 
 
+/** A type that can be represented by a primitive value returned by `valueOf`, thus can be checked
+  * for equality by `===` or `Object.is`.
+  * 
+  * Prefer `CustomEquatable` over this interface when possible. This interface is used for the
+  * convenience of the boxed objects of primitive types. */
+export interface ValueOfEquatable {
+
+    /** Returns a primitive value that can be used to identify the receiver. */
+    valueOf(): unknown;
+
+    /** A value that can be used to identify the belonging of the receiver. Recommended to be the
+      * constructor, or the base class, or a unique symbol. */
+    readonly [valueOfSpecies]: unknown;
+}
+
+
+declare global {
+
+    //  The primitive types has the same interface with their boxed types.
+    interface Boolean extends ValueOfEquatable {}
+    interface Number extends ValueOfEquatable {}
+    interface String extends ValueOfEquatable {}
+    interface Symbol extends ValueOfEquatable {}
+    interface BigInt extends ValueOfEquatable {}
+
+    //  Common built-in objects.
+    interface Date extends ValueOfEquatable {}
+
+    //  Support `RegExp` is not reasonable. We don’t know how to handle the `lastIndex` property.
+}
+
+
+for (let constructor of [Boolean, Number, String, Symbol, Date]) {
+    Object.defineProperty(constructor.prototype, valueOfSpecies, {value: constructor});
+}
+
+try {  //  `BigInt` is not fully supported, nor `globalThis`. So we use a try-catch block.
+    Object.defineProperty(BigInt.prototype, valueOfSpecies, {value: BigInt});
+} catch {}  //  Let it throw.
+
+
 /** Any type whose equality can be checked by `equals`, which include primitive values and its
  * corresponding boxed values, `Date`, a value that implements `CustomEquatable`, and an array of
  * values of type `AnyEquatable`. */
-export type AnyEquatable = null | undefined | Boolean | Number | String | Symbol | BigInt | Date
-    | CustomEquatable | readonly AnyEquatable[];
+export type AnyEquatable = null | undefined | ValueOfEquatable | CustomEquatable | readonly AnyEquatable[];
 
 
 /** Returns whether the given two values are considered equal.
   * 
-  * For example, two `true`s, `NaN`s, a `null`s, a primitive value and its corresponding boxed
-  * value, and arrays of equal elements are considered equal. If a value/element on the left hand
-  * side implements `isEqual`, it will be used for comparison; this implies the asymmetry of the
-  * function.
+  * For example, two primitive values that `===` returns `true`, two `NaN`s, two boxing objects of
+  * the same value are considered equal. Note that an primitive value is not equal to any object,
+  * including its boxed value: they are syntactically different.
   * 
-  * Note that for two objects of the same type, `equals` will only return `true` if they are the
-  * same instance, which is to say, `equals({}, {})` will return `false`. */
+  * For objects, if a value on the left hand side implements `isEqual`, it will be used for
+  * comparison. This means the function is asymmetric. If both arguments are arrays, they will be
+  * compared element by element. Otherwise they are considered not equal. */
 export function equals(a: AnyEquatable, b: AnyEquatable): boolean {
     //  Check for primitive equality.
     if (a === b || Object.is(a, b)) {return true;}
 
-    //  Filter out nullish `a`.
-    if (a === null || a === undefined) {return false;}
+    //  Filter out primitive values.
+    if (!(a instanceof Object)) {return false;}
+    if (!(b instanceof Object)) {return false;}
 
     //  Check for `isEqual` method.
-    let aEqual = (a as CustomEquatable).isEqual;
-    if (typeof aEqual === "function") {
+    let aEqual: ((other: any) => boolean) | undefined;
+    if ("isEqual" in a && typeof (aEqual = a.isEqual) === "function") {
         return aEqual.call(a, b);
     }
 
-    //  Filter out nullish `b`.
-    if (b === null || b === undefined) {return false;}
-
-    //  Check for `valueOf` method.
-    let aValue = a.valueOf(), bValue = b.valueOf();
-    if (aValue === bValue || Object.is(aValue, bValue)) {return true;}
+    //  Check for `EquatableWithValueOf` conformance.
+    if (valueOfSpecies in a && valueOfSpecies in b) {
+        if (a[valueOfSpecies] !== b[valueOfSpecies]) {return false;}
+        let aValue = a.valueOf(), bValue = b.valueOf();
+        return aValue === bValue || Object.is(aValue, bValue);
+    }
 
     //  Check array equality.
     if (Array.isArray(a) && Array.isArray(b)) {
