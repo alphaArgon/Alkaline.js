@@ -9,6 +9,49 @@
 import { RangeSet, ReadonlyRangeSet } from "./RangeSet";
 
 
+/** Returns the partial changes of the newer record from the older record, or `null` if the newer
+  * record is equal to the older record.
+  * 
+  * If the two records have different sets of keys, missing keys are considered to have `undefined`
+  * values. Keys on the prototype chain *are* considered. */
+export function recordDiff<V>(from: Record<string, V>, to: Record<string, V>, equal: (a: V, b: V) => boolean): Partial<Record<string, V>> | null {
+    let result: Partial<Record<string, V>> = {};
+    let anyChange = false;
+
+    //  FIXME: `key in some` should be replaced by “whether the key is present and iterable”.
+    //  We don’t check the iterability here.
+
+    for (let key in from) {
+        if (!(key in to)) {
+            result[key] = undefined;
+            anyChange = true;
+            continue;
+        }
+
+        let oldValue = from[key];
+        let newValue = to[key];
+        if (!equal(oldValue, newValue)) {
+            result[key] = newValue;
+            anyChange = true;
+        }
+    }
+
+    for (let key in to) {
+        if (!(key in from)) {
+            result[key] = to[key];
+            anyChange = true;
+            continue;
+        }
+        
+        //  The key is present in both records.
+        //  We already checked this key.
+        continue;
+    }
+
+    return anyChange ? result : null;
+}
+
+
 /** Returns the differences between two arrays.
   * 
   * If `droppedStart` is provided, the given two array are treated as subarrays from the value,
