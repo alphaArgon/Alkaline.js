@@ -138,7 +138,6 @@ function *_arrayKeys(length: number): Generator<string | symbol> {
 }
 
 
-
 let _inStrictMode = null as boolean | null;
 
 function _checkStrictMode(error: string): boolean {

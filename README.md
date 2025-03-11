@@ -1,24 +1,49 @@
 # Foundation.js
 
-A JavaScript library written in TypeScript that provides some useful utilities. The library requires no dependencies, and can be used in browsers and Node.js.
 
-The name is based on Apple’s Foundation framework, and we provide a similar set of utilities.
+A lightweight JavaScript library written in TypeScript. It offers a suite of useful utilities and types inspired by Apple’s Foundation framework and the Swift stdlib. Without any external dependencies, this library can be used both in browsers and with Node.js.
 
-## API
+## Features
 
 This library is still under development. Issues and pull requests are welcome.
 
-- Basic types: Defined an equatable interface, and provided a generic comparison function that works for primitive types, arrays, and objects that implement the interface. Defined a selector type can be used to lookup a function by name.
+#### Basic Types
 
-- Notification: A notification center for publish-subscribe pattern. Supports weak references to observers which automatically remove the observer when it’s no longer reachable, and two types of observation: object-selector based and closure based.
+- Introduces a `Selector` type for function lookup by name.
+- Defines equatable interfaces for custom equality checks.
+- Provides a generic function `equals` for comparing primitives, arrays, and objects that implement the interface.
 
-- Differing: A function for comparing two arrays, and a type for iterating the changes.
+#### Notification
 
-- ReactiveArray: An array that can observe changes of its content, and posts the changes as notifications.
+- Implements the class `NotificationCenter` for the publish-subscribe pattern.
+- Provides object-selector and closure-based observation types.
+- Supports weak references to senders and observers, which are automatically cleaned up when no longer reachable.
 
-- RangeSet: A range-based set of integer indices.
+#### Diffing
 
-- AttributedString: A rich text data structure that supports different styles of text.
+- Provides the function `arrayDiff` and `recordDiff` for comparing.
+- Introduced `ArrayDiff` for handily iterating over changes.
+
+#### ReactiveArray
+
+- A responsive array that tracks changes to its content and posts notifications.
+- Supports batch operation that combines all changes into one notification.
+
+#### RepeatedArray
+
+- A specialized array that has its elements identical.
+- Optimized for memory usage and iterating.
+
+#### RangeSet
+
+- A range-based set of integer indices.
+- Supports insertion, removal, Boolean operations, and splicing.
+
+#### AttributedString
+
+- A rich text data structure supporting different text styles.
+- Supports efficient substring and attribute retrieval.
+
 
 ## License
 
