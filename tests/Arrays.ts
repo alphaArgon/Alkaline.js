@@ -37,7 +37,7 @@ test("Array Diff", () => {
 
     assert.equal(diff.removals.length, 3);
     assert.equal(diff.insertions.length, 3);
-    
+
     assert.deepEqual(diff.apply(array), brray);
     assert.deepEqual(diff.inverse.apply(brray), array);
 
@@ -101,7 +101,7 @@ test("Reactive array methods", () => {
 
     assert.deepEqual(array, [-1, 0, 1, 2, 3, 4, 5, 6]);
     let saved = array.slice();
-    
+
     array.copyWithin(1, 4, 8);
     assert.deepEqual(array, [-1, 3, 4, 5, 6, 4, 5, 6]);
     assert.deepEqual(receiver.latest!.apply(saved), array);
@@ -124,13 +124,13 @@ test("Reactive array sort", () => {
     NotificationCenter.default.addObserver(receiver, "receive", ReactiveArray.didChangeNotification, array);
 
     array.sort((a, b) => a - b);
-    assert.deepEqual(array, [1, 2, 3, 4, 5, 6, 7, 8]); 
+    assert.deepEqual(array, [1, 2, 3, 4, 5, 6, 7, 8]);
     assert.deepEqual(receiver.latest!.removals, [{removedAt: 0, element: 8}]);
     assert.deepEqual(receiver.latest!.insertions, [{insertedAt: 7, element: 8}]);
 
     let random = [31, 41, 59, 26, 53, 58, 97, 93, 23, 84, 62, 64, 33, 83, 27, 95];
     array.assignFrom(random);
-    
+
     array.sort((a, b) => a - b);
     let diff = receiver.latest!;
 

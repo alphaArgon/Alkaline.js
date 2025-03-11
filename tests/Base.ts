@@ -37,7 +37,7 @@ test("Equatable", () => {
         assert(equals(a, b));
         assert(equals(b, a));
     }
-    
+
     function assertNotEqual(a: any, b: any) {
         assert(!equals(a, b));
         assert(!equals(b, a));

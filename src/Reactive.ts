@@ -37,7 +37,7 @@ import { NotificationCenter, NotificationName } from "./Notification";
 //     are not defined on the prototype might send multiple notifications. In this case, the user
 //     should use `withMutations` to reduce notifications.
 //
-//  6. The proxy handler can well handle generic mutations. However, we implement the overrides of 
+//  6. The proxy handler can well handle generic mutations. However, we implement the overrides of
 //     `push`, `unshift`, `pop`, `shift`, and `splice` for better performance, which bypass frequent
 //     checks in the proxy handler. Other methods like `sort`, `reverse`, etc. are not overridden
 //     because they are not likely to be called on a reactive array. This won’t affect the
@@ -48,10 +48,10 @@ const $: unique symbol = Symbol("ivars");
 
 
 /** Creates a new reactive array by copying the elements of the given array.
-  * 
+  *
   * A reactive array that sends notifications when the array changes, for example, when assign
   * elements using subscripting, mutate the array with standard array methods, etc.
-  * 
+  *
   * If a method returns a new array, like `map`, `filter`, etc., it is not reactive. You should
   * pass the returned array to `reactive` to make another reactive array. */
 export function reactive<T>(elements: T[], equal: (a: T, b: T) => boolean): ReactiveArray<T> {
@@ -244,13 +244,13 @@ const _nonMutatingKeys: Set<PropertyKey> = new Set([
 
     //  Defined on Object.prototype:
     "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "toLocaleString", "toString", "valueOf",
-    Symbol.toStringTag, Symbol.toPrimitive, 
+    Symbol.toStringTag, Symbol.toPrimitive,
 
     //  Defined on Array.prototype:
     "at", "concat", "entries", "every", "filter", "find", "findIndex", "findLast",
     "findLastIndex", "flat", "flatMap", "forEach", "includes", "indexOf", "join", "keys",
     "lastIndexOf", "map", "reduce", "reduceRight", "slice", "some", "toLocaleString",
-    "toReversed", "toSorted", "toSpliced", "toString", "values", "with", 
+    "toReversed", "toSorted", "toSpliced", "toString", "values", "with",
     Symbol.iterator, Symbol.unscopables, Symbol.isConcatSpreadable,
 ]);
 
@@ -393,7 +393,7 @@ class _ReactiveArrayCore<T> {
                 this._original = this._onlyChange.inverse.apply(this._host);
                 this._onlyChange = null;
             }
-    
+
             this._host[key as any] = value;
         }
 
@@ -447,7 +447,7 @@ class _ReactiveArrayCore<T> {
         if (this._original === null
          && (removed.length !== 0 || oldLength !== this._host.length)) {
             let realIndex = resolveIndex(index, oldLength, arguments.length > 0);
-    
+
             let diff = arrayDiff(removed, elements ?? [], this._equal, realIndex);
             this._recordChange(diff);
         }

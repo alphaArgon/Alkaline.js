@@ -54,11 +54,11 @@ export class NotificationCenter {
     [$]: _Existential;
 
     /** Creates a new notification center.
-      * 
+      *
       * The flag `weakObservers` indicates whether the observers are weakly referenced. If `true`,
       * the notification center internally uses `WeakRef` wrappers to store the observers. However,
       * enabling this option is strongly discouraged; it might lead to unexpected lifetime issues.
-      * 
+      *
       * By default, the flag is `false`. If the environment doesn’t support `WeakMap`, the flag
       * is ignored. */
     public constructor(weakObservers: boolean = false) {
@@ -90,12 +90,12 @@ export class NotificationCenter {
 
     /** Adds a observer of the given name. If the sender is not specified or is `null`, the observer
       * will receive all notifications of the given name.
-      * 
+      *
       * The provided sender is always unretained. The observer is retained and you must manually
       * remove it when it is no longer needed, unless `areObserversWeaklyReferenced` is `true`, in
       * which case the observer is cleaned up on the next notification post. If you don’t provide
       * a sender or provide `null`, all notifications of the given name will be observed.
-      * 
+      *
       * If you add the same observer to the same name and sender for multiple times, an error will
       * be thrown. */
     public addObserver<T extends object, UserInfo>(receiver: T, selector: Selector<T>, name: NotificationName<UserInfo>, sender?: object | null): void {
@@ -111,14 +111,14 @@ export class NotificationCenter {
 
     /** Adds an observing function for the given name, returns a token that can be used to remove
       * the observation.
-      * 
+      *
       * This method has the same effect as the following code using `addObserver`:
-      * 
+      *
       * ```ts
       * let token = {perform: body};
       * center.addObserver(token, selector(token.perform), name, sender);
       * ```
-      * 
+      *
       * But the method is optimized and returns a more lightweight token. If the center uses weak
       * references, you must keep the token alive; otherwise it might be cleaned up soon. */
     public addObserving<UserInfo>(name: NotificationName<UserInfo>, body: (notification: Notification<UserInfo>) => void): any;

@@ -52,7 +52,7 @@ export interface ReadonlyRangeSet extends IndexSet, CustomEquatable, CustomCopya
 
 
 /** An set of indices stored as non-overlapping ranges.
-  * 
+  *
   * All methods that accept a pair of number arguments, including the constructor, treat the pair
   * as a right-open range. Be careful with the second argument. If it’s not specified, it will be
   * considered as the successor of the first argument. We don’t use length-based methods! */

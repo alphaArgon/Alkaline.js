@@ -3,7 +3,7 @@
         {
             "name": "tsx",
             "type": "node",
-            "request": "launch",        
+            "request": "launch",
             "program": "${file}",
             "runtimeExecutable": "tsx",
             "console": "integratedTerminal",

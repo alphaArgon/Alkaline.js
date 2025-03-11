@@ -10,10 +10,10 @@ import { resolveBackwardsIndex, resolveIndex } from "./_ESUtils";
 
 
 /** Returns a readonly array that repeats the element for the given times.
-  * 
+  *
   * The return value is a “duck typed” array. That is, it has the same methods, same properties, and
   * can pass `Array.isArray` and `instanceof Array`, but you are not allowed to mutate or extend it.
-  * 
+  *
   * This function trades performance for memory usage; accessing elements via subscripting is slow.
   * However, using iterator or methods like `forEach`, `map`, etc. has about the same performance as
   * a native array; some methods may even be faster if you don’t rely on the index of an element. */
@@ -178,7 +178,7 @@ class RepeatedArray<T> extends Array<T> {
             yield repeated;
         }
     }
-    
+
     public override *entries(): ArrayIterator<[number, T]> {
         let length = this.length;
         let repeated = this[length - 1];
@@ -232,7 +232,7 @@ class RepeatedArray<T> extends Array<T> {
 
         return found ? repeated : undefined;
     }
-    
+
     public override includes(searchElement: T): boolean {
         let length = this.length;
         if (length === 0) {return false;}
@@ -265,7 +265,7 @@ class RepeatedArray<T> extends Array<T> {
         for (let i = 0; i < length; ++i) {
             arguments.length > 1
                 ? callback.call(arguments[1], repeated, i, this)
-                : callback(repeated, i, this) 
+                : callback(repeated, i, this)
         }
     }
 

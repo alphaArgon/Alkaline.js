@@ -9,7 +9,6 @@
 import { arrayEquals } from "./Array";
 
 
-
 //  MARK: - Equatability
 
 
@@ -28,7 +27,7 @@ export interface CustomEquatable {
 
 /** A type that can be represented by a primitive value returned by `valueOf`, thus can be checked
   * for equality by `===` or `Object.is`.
-  * 
+  *
   * Prefer `CustomEquatable` over this interface when possible. This interface is used for the
   * convenience of the boxed objects of primitive types. */
 export interface ValueOfEquatable {
@@ -74,11 +73,11 @@ export type AnyEquatable = null | undefined | ValueOfEquatable | CustomEquatable
 
 
 /** Returns whether the given two values are considered equal.
-  * 
+  *
   * For example, two primitive values that `===` returns `true`, two `NaN`s, two boxing objects of
   * the same value are considered equal. Note that an primitive value is not equal to any object,
   * including its boxed value: they are syntactically different.
-  * 
+  *
   * For objects, if a value on the left hand side implements `isEqual`, it will be used for
   * comparison. This means the function is asymmetric. If both arguments are arrays, they will be
   * compared element by element. Otherwise they are considered not equal. */
