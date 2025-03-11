@@ -47,7 +47,13 @@ import { NotificationCenter, NotificationName } from "./Notification";
 const $: unique symbol = Symbol("ivars");
 
 
-/** Creates a new reactive array by copying the elements of the given array. */
+/** Creates a new reactive array by copying the elements of the given array.
+  * 
+  * A reactive array that sends notifications when the array changes, for example, when assign
+  * elements using subscripting, mutate the array with standard array methods, etc.
+  * 
+  * If a method returns a new array, like `map`, `filter`, etc., it is not reactive. You should
+  * pass the returned array to `reactive` to make another reactive array. */
 export function reactive<T>(elements: T[], equal: (a: T, b: T) => boolean): ReactiveArray<T> {
     let array = Reflect.construct(Array, [], ReactiveArray) as ReactiveArray<T>;
 
@@ -61,14 +67,13 @@ export function reactive<T>(elements: T[], equal: (a: T, b: T) => boolean): Reac
 
 
 /** A readonly reactive array, which is semantically immutable. */
-export type ReadonlyReactiveArray<T> = ReadonlyArray<T> & {[$]: any;};
+export interface ReadonlyReactiveArray<T> extends ReadonlyArray<T> {
+
+    [$]: _ReactiveArrayCore<T>;
+}
 
 
-/** A reactive array that sends notifications when the array changes, for example, when assign
-  * elements using subscripting, mutate the array with standard array methods, etc.
-  *
-  * The returned array of a method, if it returns, is not reactive. If you need a reactive array,
-  * you must manually create a new ReactiveArray. */
+/** A reactive array that sends notifications when the array changes. */
 export class ReactiveArray<T> extends Array<T> {
 
     /** The notification name for the change of the array. */
@@ -104,33 +109,45 @@ export class ReactiveArray<T> extends Array<T> {
 //  matter whether they are overridden or not), so we don’t need to call `beginMutation` and
 //  `endMutation` again.
 
-ReactiveArray.prototype.push = function (...items: readonly any[]): number {
-    this[$].replaceIn(this.length, 0, items);
-    return this.length;
-}
+for (let [name, method] of Object.entries({
 
-ReactiveArray.prototype.unshift = function (...items: readonly any[]): number {
-    this[$].replaceIn(0, 0, items);
-    return this.length;
-}
+    push(...items) {
+        this[$].replaceIn(this.length, 0, items);
+        return this.length;
+    },
 
-ReactiveArray.prototype.pop = function (): any {
-    let [removed] = this[$].replaceIn(-1, 1, []);
-    return removed;
-}
+    unshift(...items) {
+        this[$].replaceIn(0, 0, items);
+        return this.length;
+    },
 
-ReactiveArray.prototype.shift = function (): any {
-    let [removed] = this[$].replaceIn(0, 1, []);
-    return removed;
-}
+    pop() {
+        let [removed] = this[$].replaceIn(-1, 1, []);
+        return removed;
+    },
 
-ReactiveArray.prototype.splice = function (start: number, deleteCount?: number, ...items: any[]): any[] {
-    switch (arguments.length) {
-    case 0: return this[$].replaceIn();
-    case 1: return this[$].replaceIn(start);
-    case 2: return this[$].replaceIn(start, deleteCount);
-    default: return this[$].replaceIn(start, deleteCount, items);
+    shift() {
+        let [removed] = this[$].replaceIn(0, 1, []);
+        return removed;
+    },
+
+    splice(start, deleteCount, ...items) {
+        switch (arguments.length) {
+        case 0: return this[$].replaceIn();
+        case 1: return this[$].replaceIn(start);
+        case 2: return this[$].replaceIn(start, deleteCount);
+        default: return this[$].replaceIn(start, deleteCount, items);
+        }
     }
+
+} as ReactiveArray<any>)) {
+
+    Object.defineProperty(ReactiveArray.prototype, name, {
+        value: method,
+        writable: false,
+        enumerable: false,
+        configurable: true,
+    });
 }
 
 
@@ -257,7 +274,7 @@ const _methodCache: Map<Function, Function> = new Map();
 
 
 class _ReactiveArrayCore<T> {
-    
+
     private _host: ReactiveArray<T>;
     private _equal: (a: T, b: T) => boolean;
 
