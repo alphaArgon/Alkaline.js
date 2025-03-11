@@ -6,6 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
+import { resolveIndex } from "./_ESUtils";
 import { ArrayDiff, arrayDiff } from "./Diffing";
 import { NotificationCenter, NotificationName } from "./Notification";
 
@@ -428,15 +429,7 @@ class _ReactiveArrayCore<T> {
 
         if (this._original === null
          && (removed.length !== 0 || oldLength !== this._host.length)) {
-            let realIndex = Math.trunc(+index!);  //  `undefined` will result in `NaN`, and finally `0`.
-
-            if (isNaN(realIndex)) {
-                realIndex = 0;
-            }
-
-            realIndex = realIndex < 0
-                ? Math.max(0, oldLength + realIndex)
-                : Math.min(realIndex, oldLength);
+            let realIndex = resolveIndex(index, oldLength, arguments.length > 0);
     
             let diff = arrayDiff(removed, elements ?? [], this._equal, realIndex);
             this._recordChange(diff);

@@ -14,6 +14,8 @@ import { reactive, ReactiveArray } from "@/Reactive";
 import { arrayDiff, ArrayDiff } from "@/Diffing";
 import { RangeSet } from "@/RangeSet";
 import { equals } from "@/Base";
+import { repeated } from "@/Repeated";
+import { Point } from "./Base";
 
 
 let receiver = {
@@ -195,4 +197,53 @@ test("Reactive array overrides", () => {
 
     assert.deepEqual(array.splice(2.5, 7.5), [2, 3, 4]);
     assert.deepEqual(brray.splice(2.5, 7.5), [2, 3, 4]);
+});
+
+
+test("Repeated", () => {
+    for (let length of [0, 2, 4, 8, 16, 32, 64, 128]) {
+        let repeating = repeated(length, Point.zero);
+        let array = Array.from({length}, () => Point.zero);
+        assert(Array.isArray(repeating));
+        assert.equal(repeating.toString(), array.toString());
+        assert.deepEqual(repeating, array);
+        assert(equals(repeating, array));
+    }
+
+    let count = 0;
+    let repeating = repeated(20, Point.zero);
+    let mapped = repeating.map(point => {
+        count += 1;
+        return point.x;
+    });
+
+    assert.equal(count, 20);  //  Even if repeated, the callback may return different objects.
+    assert.deepEqual(mapped, repeated(20, 0));
+
+    count = 0;
+    let index = repeating.findIndex(point => {
+        count += 1;
+        return !equals(point, Point.zero);
+    })
+
+    assert.equal(count, 1);  //  For repeated elements, one call is enough.
+    assert.equal(index, -1);
+
+    count = 0;
+    let flag = repeating.every(point => {
+        count += 1;
+        return equals(point, Point.zero);
+    });
+
+    assert.equal(count, 1);
+    assert.equal(flag, true);
+
+    count = 0;
+    flag = repeating.every((point, i) => {
+        count += 1;
+        return equals(point, Point.zero);
+    });
+
+    assert.equal(count, 20);  //  If the index is used, we can’t stop early.
+    assert.equal(flag, true);
 });
