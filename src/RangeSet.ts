@@ -7,6 +7,7 @@
  */
 
 import type { CustomCopyable, CustomEquatable } from "./Base";
+import { $ } from "./_Internal";
 
 
 /** A type that used to iterate over a set of indices. */
@@ -19,9 +20,6 @@ export function *makeRange(start: number, end: number): IndexSet {
         yield i;
     }
 }
-
-
-const $ = Symbol("ivars");
 
 
 export interface ReadonlyRangeSet extends IndexSet, CustomEquatable, CustomCopyable {

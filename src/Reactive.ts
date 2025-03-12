@@ -9,6 +9,7 @@
 import { resolveIndex } from "./_ESUtils";
 import { ArrayDiff, arrayDiff } from "./Diffing";
 import { NotificationCenter, NotificationName } from "./Notification";
+import { $ } from "./_Internal";
 
 
 //  A reactive array can send notifications when the array changes. Here’s how it works:
@@ -42,9 +43,6 @@ import { NotificationCenter, NotificationName } from "./Notification";
 //     checks in the proxy handler. Other methods like `sort`, `reverse`, etc. are not overridden
 //     because they are not likely to be called on a reactive array. This won’t affect the
 //     correctness of the reactive system, but might have some performance overhead.
-
-
-const $: unique symbol = Symbol("ivars");
 
 
 /** Creates a new reactive array by copying the elements of the given array.

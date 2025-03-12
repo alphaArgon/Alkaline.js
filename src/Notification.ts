@@ -7,6 +7,7 @@
  */
 
 import type { Selector } from "./Base";
+import { $ } from "./_Internal";
 
 
 declare const subtype: unique symbol;
@@ -24,8 +25,6 @@ export type Notification<UserInfo = void> = {
 let _defaultCenter: NotificationCenter | null = null;
 const _anySender: object = Object.create(null);
 
-
-const $: unique symbol = Symbol("ivars");
 
 type _Existential = {
 
