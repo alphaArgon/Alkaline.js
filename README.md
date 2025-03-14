@@ -37,13 +37,22 @@ This library is still under development. Issues and pull requests are welcome.
 #### RangeSet
 
 - A range-based set of integer indices.
-- Supports insertion, removal, Boolean operations, and splicing.
+- Supports insertion, removal, Boolean operations, and splicing.
 
 #### AttributedString
 
 - A rich text data structure supporting different text styles.
 - Supports efficient substring and attribute retrieval.
 
+#### Result
+
+- A type-safe wrapper for handling success and failure cases.
+- Provides methods for transforming values and errors.
+
+#### RefCounted
+
+- A reference-counted wrapper for managing resource lifecycles.
+- Useful for managing resources that require explicit cleanup, like object URLs.
 
 ## License
 
