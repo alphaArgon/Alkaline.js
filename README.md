@@ -1,7 +1,8 @@
-# Foundation.js
+# Alkaline.js
 
+A lightweight JavaScript library written in TypeScript. It offers a suite of useful utilities and types inspired by the Swift stdlib. Without any external dependencies, this library can be used both in browsers and with Node.js.
 
-A lightweight JavaScript library written in TypeScript. It offers a suite of useful utilities and types inspired by Apple’s Foundation framework and the Swift stdlib. Without any external dependencies, this library can be used both in browsers and with Node.js.
+The name *Alkaline* is derived from *alkali*, a chemistry *base*. Similarly, this library serves as a *basic* foundation for your programming.
 
 ## Features
 

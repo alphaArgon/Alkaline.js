@@ -1,6 +1,6 @@
 /*
  *  RangeSet.ts
- *  Foundation
+ *  Alkaline
  *
  *  Created by alpha on 2024/8/13.
  *  Copyright © 2024 alphaArgon.

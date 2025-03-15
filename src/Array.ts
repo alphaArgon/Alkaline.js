@@ -1,6 +1,6 @@
 /*
  *  Array.ts
- *  Foundation
+ *  Alkaline
  *
  *  Created by alpha on 2025/3/7.
  *  Copyright © 2025 alphaArgon.

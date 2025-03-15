@@ -1,6 +1,6 @@
 /*
  *  _RunArray.ts
- *  Foundation
+ *  Alkaline
  *
  *  Created by alpha on 2024/12/28.
  *  Copyright © 2024 alphaArgon.

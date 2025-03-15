@@ -1,6 +1,6 @@
 /*
  *  _ESUtils.ts
- *  Foundation
+ *  Alkaline
  *
  *  Created by alpha on 2025/3/11.
  *  Copyright © 2025 alphaArgon.
