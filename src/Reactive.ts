@@ -270,6 +270,7 @@ const _methodCache: Map<Function, Function> = new Map();
 //     If the only change is recorded, it will be used. Otherwise, a diff between the original array
 //     and the current array will be calculated.
 
+//  TODO: Trim the range to diff only the changed elements with `RangeChange` recording.
 
 class _ReactiveArrayCore<T> {
 

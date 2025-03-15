@@ -14,14 +14,6 @@ import { $ } from "./_Internal";
 export type IndexSet = Iterable<number>;
 
 
-/** Returns an iterator that yields numbers in the range `[start, end)`. */
-export function *makeRange(start: number, end: number): IndexSet {
-    for (let i = start; i < end; i += 1) {
-        yield i;
-    }
-}
-
-
 export interface ReadonlyRangeSet extends IndexSet, CustomEquatable, CustomCopyable {
 
     [$]: any;
