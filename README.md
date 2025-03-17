@@ -40,6 +40,12 @@ This library is still under development. Issues and pull requests are welcome.
 - A range-based set of integer indices.
 - Supports insertion, removal, Boolean operations, and splicing.
 
+#### Decimal
+
+- A precise fixed-point arithmetic type for handling decimal numbers.
+- Supports arbitrary precision when `BigInt` is available.
+- Provides methods for rounding, comparison, and arithmetic operations.
+
 #### AttributedString
 
 - A rich text data structure supporting different text styles.
