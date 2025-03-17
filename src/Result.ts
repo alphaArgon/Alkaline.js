@@ -28,7 +28,7 @@ export class Result<Success, Failure> {
     [$]: {
         readonly value: Success | Failure;
         readonly failed: boolean;
-    }
+    };
 
     private constructor() {
         throw new Error("Use `success` or `failure` to create a result.");

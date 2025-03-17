@@ -25,7 +25,7 @@ let receiver = {
     receive(notification: Notification<any>) {
         this.latest = notification.userInfo;
     }
-}
+};
 
 NotificationCenter.default = new NotificationCenter(true);
 
@@ -224,7 +224,7 @@ test("Repeated", () => {
     let index = repeating.findIndex(point => {
         count += 1;
         return !equals(point, Point.zero);
-    })
+    });
 
     assert.equal(count, 1);  //  For repeated elements, one call is enough.
     assert.equal(index, -1);

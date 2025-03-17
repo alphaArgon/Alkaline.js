@@ -126,7 +126,7 @@ const _arrayProxy: ProxyHandler<readonly any[]> = {
 
         return Reflect.getOwnPropertyDescriptor(array, key);
     },
-}
+};
 
 
 function *_arrayKeys(length: number): Generator<string | symbol> {
@@ -253,7 +253,7 @@ class RepeatedArray<T> extends Array<T> {
         return Array.from(this, (value, index) => {
             return arguments.length > 1
                 ? transform.call(arguments[1], value, index, this)
-                : transform(value, index, this)
+                : transform(value, index, this);
         });
     }
 
@@ -264,7 +264,7 @@ class RepeatedArray<T> extends Array<T> {
         for (let i = 0; i < length; ++i) {
             arguments.length > 1
                 ? callback.call(arguments[1], repeated, i, this)
-                : callback(repeated, i, this)
+                : callback(repeated, i, this);
         }
     }
 

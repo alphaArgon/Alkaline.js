@@ -23,7 +23,7 @@ export class RefCounted<T> {
         count: number;
         releasing: boolean;
         finalize: (value: T) => void;
-    }
+    };
 
     /** Creates a new reference-counted object with an initial reference count of 1. */
     public constructor(value: T, finalize: (value: T) => void) {

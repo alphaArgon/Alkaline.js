@@ -184,7 +184,7 @@ const _arrayProxy: ProxyHandler<ReactiveArray<any>> = {
                 this[$].cancelMutation();
                 throw error;
             }
-        }
+        };
 
         Object.defineProperties(cached, {
             length: {value: value.length},
@@ -229,7 +229,7 @@ const _arrayProxy: ProxyHandler<ReactiveArray<any>> = {
 
         throw new Error("Cannot delete elements from a reactive array.");
     }
-}
+};
 
 
 /** Known method names that won’t change the elements of the array, so from the getter of the proxy
