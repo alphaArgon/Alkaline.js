@@ -126,7 +126,7 @@ export class NotificationCenter {
         let sender: object | null;
         let body: Function;
 
-        if (arguments.length == 2) {
+        if (arguments.length === 2) {
             sender = null;
             body = arg2;
         } else {

@@ -30,7 +30,7 @@ export function decimal(arg1: number | string): Decimal {
 
     if (arguments.length > 1) {
         let places = arguments[1];
-        if (places != ~~places || places < 0) {
+        if (places !== ~~places || places < 0) {
             throw new RangeError("Places must be a non-negative integer.");
         }
 
@@ -100,7 +100,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
     /** Returns a new decimal with the specified number of places. */
     public toPlaces(places: number, roundMethod: RoundingMethod = "round"): Decimal {
-        if (places != ~~places || places < 0) {
+        if (places !== ~~places || places < 0) {
             throw new RangeError("Places must be a non-negative integer.");
         }
 

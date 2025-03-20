@@ -178,7 +178,7 @@ function _formChanges<T>(a: readonly T[], b: readonly T[], trace: _V[]): ArrayCh
     for (let d = trace.length - 1; d > 0; --d) {
         let v = trace[d];
         let k = x - y;
-        let prev_k = (k == -d || (k != d && v.at(k - 1) < v.at(k + 1))) ? k + 1 : k - 1;
+        let prev_k = (k === -d || (k !== d && v.at(k - 1) < v.at(k + 1))) ? k + 1 : k - 1;
         let prev_x = v.at(prev_k);
         let prev_y = prev_x - prev_k;
 
@@ -188,7 +188,7 @@ function _formChanges<T>(a: readonly T[], b: readonly T[], trace: _V[]): ArrayCh
             y -= 1;
         }
 
-        if (y != prev_y) {
+        if (y !== prev_y) {
             changes.push({insertedAt: prev_y, element: b[prev_y]});
         } else {
             changes.push({removedAt: prev_x, element: a[prev_x]});
@@ -220,12 +220,12 @@ function _descent<T>(a: readonly T[], b: readonly T[], cmp: (a: T, b: T) => bool
         // The code in this loop is _very_ hot—the loop bounds increases in terms
         // of the iterator of the outer loop!
         for (let k = -d; k <= d; k += 2) {
-            if (k == -d) {
+            if (k === -d) {
                 x = prev_v.at(k + 1);
             } else {
                 let km = prev_v.at(k - 1);
 
-                if (k != d) {
+                if (k !== d) {
                     let kp = prev_v.at(k + 1);
                     if (km < kp) {
                         x = kp;
