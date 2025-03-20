@@ -114,6 +114,16 @@ export class Decimal implements CustomEquatable, CustomComparable {
         return _makeFrozenDecimal({scaled, places});
     }
 
+    /** Returns whether the decimal’s integer part has at most the specified number of digits.
+      * 
+      * This method is useful before storing the decimal into the database. For example, `DEC(6, 2)`
+      * can store at most four digits of the integer part (whose absolute value should be less than
+      * 10,000), so you can validate the decimal using `integerFitsIn(4)`. */
+    public integerFitsIn(places: number): boolean {
+        let shift = places + this.places;
+        return _rightShift(this[$].scaled, shift, "trunc") === 0;
+    }
+
     /** Returns the signum of the decimal. */
     public get signum(): number {
         if (this[$].scaled === 0) {return 0;}

@@ -136,3 +136,27 @@ test("Decimal bad initialization", () => {
     assert.throws(() => decimal(Infinity), Error);
     assert.throws(() => decimal("a"), Error);
 });
+
+
+test("Decimal fitting", () => {
+    assert(Decimal.zero.integerFitsIn(0));
+    assert(decimal("000.000").integerFitsIn(0));
+
+    let d = decimal("123.456");
+    assert(!d.integerFitsIn(-1));
+    assert(!d.integerFitsIn(0));
+    assert(!d.integerFitsIn(2));
+    assert(d.integerFitsIn(3));
+    assert(d.integerFitsIn(6));
+
+    let b = d.negated();
+    assert(!b.integerFitsIn(-1));
+    assert(!b.integerFitsIn(0));
+    assert(!b.integerFitsIn(2));
+    assert(b.integerFitsIn(3));
+    assert(b.integerFitsIn(6));
+
+    let p = decimal(999.999, 3);
+    assert(p.integerFitsIn(3));
+    assert(p.integerFitsIn(6));
+});
