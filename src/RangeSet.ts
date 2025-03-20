@@ -16,7 +16,7 @@ export type IndexSet = Iterable<number>;
 
 export interface ReadonlyRangeSet extends IndexSet, CustomEquatable, CustomCopyable {
 
-    [$]: any;
+    [$]: unknown;
 
     readonly count: number;
 
@@ -30,9 +30,6 @@ export interface ReadonlyRangeSet extends IndexSet, CustomEquatable, CustomCopya
 
     ranges(): IterableIterator<[start: number, end: number]>;
     reversedRanges(): IterableIterator<[start: number, end: number]>;
-
-    isEqual(other: any): boolean;
-    makeCopy(): RangeSet;
 
     union(other: ReadonlyRangeSet): RangeSet;
     intersection(other: ReadonlyRangeSet): RangeSet;

@@ -19,11 +19,12 @@ export function range(start: number, end: number = start + 1): Range {
         throw new RangeError("Start must be less than or equal to end.");
     }
 
-    return Object.freeze({
-        __proto__: Range.prototype,
+    return Object.freeze<Range>({
         start: numberStart,
         end: numberEnd,
-    }) as any as Range;
+        //@ts-expect-error
+        __proto__: Range.prototype,
+    });
 }
 
 
@@ -54,12 +55,13 @@ export class Range implements Iterable<number>, CustomEquatable {
 
     /** Returns a range change indicating all elements in the range are changed. */
     public dirtyChange(): RangeChange {
-        return Object.freeze({
-            __proto__: RangeChange.prototype,
+        return Object.freeze<RangeChange>({
             start: this.start,
             oldEnd: this.end,
             newEnd: this.end,
-        }) as any as RangeChange;
+            //@ts-expect-error
+            __proto__: RangeChange.prototype,
+        });
     }
 
     /** Returns a range change indicating elements in the range are replaced by new elements, which
@@ -71,12 +73,13 @@ export class Range implements Iterable<number>, CustomEquatable {
             throw new RangeError("New end must be greater than or equal to start.");
         }
 
-        return Object.freeze({
-            __proto__: RangeChange.prototype,
+        return Object.freeze<RangeChange>({
             start: this.start,
             oldEnd: this.end,
             newEnd: numberNewEnd,
-        }) as any as RangeChange;
+            //@ts-expect-error
+            __proto__: RangeChange.prototype,
+        });
     }
 
     /** Returns a range change indicating elements in the range are replaced by new elements, which
@@ -88,12 +91,13 @@ export class Range implements Iterable<number>, CustomEquatable {
             throw new RangeError("New length must be greater than or equal to 0.");
         }
 
-        return Object.freeze({
-            __proto__: RangeChange.prototype,
+        return Object.freeze<RangeChange>({
             start: this.start,
             oldEnd: this.end,
             newEnd: this.start + numberNewLength,
-        }) as any as RangeChange;
+            //@ts-expect-error
+            __proto__: RangeChange.prototype,
+        });
     }
 }
 
@@ -126,12 +130,13 @@ export class RangeChange implements CustomEquatable {
         let oldEnd = Math.max(this.oldEnd, other.oldEnd - this.diffLength);
         let newEnd = Math.max(this.newEnd + other.diffLength, other.newEnd);
 
-        return Object.freeze({
-            __proto__: RangeChange.prototype,
+        return Object.freeze<RangeChange>({
             start: start,
             oldEnd: oldEnd,
             newEnd: newEnd,
-        }) as any as RangeChange;
+            //@ts-expect-error
+            __proto__: RangeChange.prototype,
+        });
     }
 
     public isEqual(other: any): boolean {

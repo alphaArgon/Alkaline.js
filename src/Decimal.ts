@@ -270,10 +270,11 @@ type _Existential = {
 
 
 function _makeFrozenDecimal(ext: _Existential): Decimal {
-    return Object.freeze({
-        __proto__: Decimal.prototype,
+    return Object.freeze<Decimal>({
         [$]: Object.freeze(ext),
-    }) as any;
+        //@ts-expect-error
+        __proto__: Decimal.prototype,
+    });
 }
 
 

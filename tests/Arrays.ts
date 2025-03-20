@@ -180,6 +180,7 @@ test("Reactive array overrides", () => {
     let array = [0, 1, 2, 3, 4];
     let brray = reactive(array, equals);
 
+    //  TypeScript `splice` requires at least one argument, but the spec allows it to be omitted.
     assert.equal((array as any).splice().length, 0);
     assert.equal((brray as any).splice().length, 0);
 

@@ -8,7 +8,7 @@
 
 
 /** Returns whether the given two arrays are equal compared by the given function. */
-export function arrayEquals(a: readonly any[], b: readonly any[], equals: (a: any, b: any) => boolean): boolean {
+export function arrayEquals<T>(a: readonly T[], b: readonly T[], equals: (a: T, b: T) => boolean): boolean {
     let aLength = a.length, bLength = b.length;
     if (aLength !== bLength) {return false;}
 

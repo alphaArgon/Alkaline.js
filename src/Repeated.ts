@@ -145,7 +145,7 @@ function _checkStrictMode(error: string): boolean {
         _inStrictMode = false;
 
         try {
-            (_emptyArray as any).length = 1;
+            (_emptyArray as any[]).length = 1;
         } catch {
             _inStrictMode = true;
         }

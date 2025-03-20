@@ -351,7 +351,7 @@ class _ReactiveArrayCore<T> {
         this._onlyChange = null;
     }
 
-    public setAt(key: any, value: any): boolean {
+    public setAt(key: PropertyKey, value: unknown): boolean {
         //  If the original array is present, we can omit change tracking.
         if (this._original !== null) {
             return Reflect.set(this._host, key, value);
@@ -370,12 +370,12 @@ class _ReactiveArrayCore<T> {
 
             let old = this._host[index];
 
-            if (!this._equal(old, value)) {
-                let diff = ArrayDiff.singleChange(index, old, value);
+            if (!this._equal(old, value as T)) {
+                let diff = ArrayDiff.singleChange(index, old, value as T);
                 this._recordChange(diff);
             }
 
-            this._host[index] = value;
+            this._host[index] = value as T;
 
         } else {
             //  The index is out of bounds or has a fractional part. In this case, we just load the
@@ -393,13 +393,13 @@ class _ReactiveArrayCore<T> {
                 this._onlyChange = null;
             }
 
-            this._host[key as any] = value;
+            this._host[key as any] = value as T;
         }
 
         return true;
     }
 
-    public setLength(length: any): boolean {
+    public setLength(length: unknown): boolean {
         //  If the length is the same, do nothing.
         if (length === this._host.length) {
             return true;
@@ -420,7 +420,7 @@ class _ReactiveArrayCore<T> {
         if (this._original !== null) {
             //  Setting the length with bad type will throw an error.
             //  But we saved the original array, so we can restore it.
-            this._host.length = length;
+            this._host.length = length as number;  //  Let it throws if not a number.
             return true;
         }
 
