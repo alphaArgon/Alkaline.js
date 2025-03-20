@@ -76,13 +76,11 @@ export class RangeSet implements ReadonlyRangeSet {
     }
 
     public get first(): number | undefined {
-        if (this[$].count === 0) {return null as any;}
-        return this[$].bounds[0] as any;
+        return this[$].bounds[0];
     }
 
     public get last(): number | undefined {
-        if (this[$].count === 0) {return null as any;}
-        return this[$].bounds[this[$].bounds.length - 1] - 1 as any;
+        return this[$].bounds[this[$].bounds.length - 1] - 1;
     }
 
     public *[Symbol.iterator](): IterableIterator<number> {
