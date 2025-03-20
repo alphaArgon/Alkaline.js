@@ -38,8 +38,8 @@ export function decimal(arg1: number | string): Decimal {
         return _makeFrozenDecimal(_makeFromRep(rep));
     }
 
-    let rep = arg1.toFixed(20);  //  Arbitrary limit.
-    rep = rep.replace(/0+$/, "");
+    let rep = arg1.toPrecision(16);  //  16 is the length of `MAX_SAFE_INTEGER`.
+    rep = rep.replace(/.?0+$/, "");
     return _makeFrozenDecimal(_makeFromRep(rep));
 }
 
@@ -80,22 +80,22 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
     /** Returns the number of digits in the fractional part with trailing zeros trimmed. */
     public get trimmedPlaces(): number {
-        let zeros = 0;
+        let places = this[$].places;
         let scaled = this[$].scaled;
 
         if (typeof scaled === "number") {
-            while (scaled % 10 === 0) {
-                zeros += 1;
+            while (places !== 0 && scaled % 10 === 0) {
+                places -= 1;
                 scaled /= 10;
             }
         } else {
-            while (scaled % 10n === 0n) {
-                zeros += 1;
+            while (places !== 0 && scaled % 10n === 0n) {
+                places -= 1;
                 scaled /= 10n;
             }
         }
 
-        return this[$].places - zeros;
+        return places;
     }
 
     /** Returns a new decimal with the specified number of places. */
