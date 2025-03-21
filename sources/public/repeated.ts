@@ -1,12 +1,12 @@
 /*
- *  Repeated.ts
+ *  repeated.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/11.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { resolveBackwardsIndex, resolveIndex } from "./_ESUtils";
+import { resolveBackwardsIndex, resolveIndex } from "../private/es-utils";
 
 
 /** Returns a readonly array that repeats the element for the given times.

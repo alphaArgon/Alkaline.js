@@ -1,12 +1,12 @@
 /*
- *  RangeChange.ts
+ *  range-change.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/15.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { CustomEquatable } from "./Base";
+import { CustomEquatable } from "./base";
 
 
 /** Creates a readonly range. If the second argument is not specified, a range of length 1 is

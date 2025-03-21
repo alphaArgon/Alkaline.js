@@ -1,12 +1,12 @@
 /*
- *  Diffing.ts
+ *  diffing.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/3.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { RangeSet, ReadonlyRangeSet } from "./RangeSet";
+import { RangeSet, ReadonlyRangeSet } from "./range-set";
 
 
 /** Returns the partial changes of the newer record from the older record, or `null` if the newer

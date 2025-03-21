@@ -1,12 +1,12 @@
 /*
- *  RefCounted.ts
+ *  ref-count.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/12.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { $ } from "./_Internal";
+import { $ } from "../private/symbols";
 
 
 /** A reference-counted object that manages the lifecycle of a resource.

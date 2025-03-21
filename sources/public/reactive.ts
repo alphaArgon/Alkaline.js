@@ -1,15 +1,15 @@
 /*
- *  Reactive.ts
+ *  reactive.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/4.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { resolveIndex } from "./_ESUtils";
-import { ArrayDiff, arrayDiff } from "./Diffing";
-import { NotificationCenter, NotificationName } from "./Notification";
-import { $ } from "./_Internal";
+import { ArrayDiff, arrayDiff } from "./diffing";
+import { NotificationCenter, NotificationName } from "./notification";
+import { resolveIndex } from "../private/es-utils";
+import { $ } from "../private/symbols";
 
 
 //  A reactive array can send notifications when the array changes. Here’s how it works:

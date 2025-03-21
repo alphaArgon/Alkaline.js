@@ -1,13 +1,13 @@
 /*
- *  RangeSet.ts
+ *  range-set.ts
  *  Alkaline
  *
  *  Created by alpha on 2024/8/13.
  *  Copyright © 2024 alphaArgon.
  */
 
-import type { CustomCopyable, CustomEquatable } from "./Base";
-import { $ } from "./_Internal";
+import type { CustomCopyable, CustomEquatable } from "./base";
+import { $ } from "../private/symbols";
 
 
 /** A type that used to iterate over a set of indices. */

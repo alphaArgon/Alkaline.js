@@ -1,13 +1,13 @@
 /*
- *  CFAttributedString.ts
- *  Cocoa.js
+ *  attributed-string.ts
+ *  Alkaline
  *
  *  Created by alpha on 2024/12/28.
  *  Copyright © 2024 alphaArgon.
  */
 
-import { _RunArray } from "./_RunArray.js";
-import { AnyEquatable, CustomCopyable, CustomEquatable, equals, Indirect } from "./Base.js";
+import { _RunArray } from "../private/run-array";
+import { AnyEquatable, CustomCopyable, CustomEquatable, equals, Indirect } from "./base";
 
 
 export class AttributedString<Attributes> implements CustomEquatable, CustomCopyable {

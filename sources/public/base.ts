@@ -1,12 +1,12 @@
 /*
- *  Base.ts
+ *  base.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/7.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { arrayEquals } from "./Array";
+import { arrayEquals } from "./array";
 
 
 //  MARK: - Equatability

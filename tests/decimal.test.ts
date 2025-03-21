@@ -1,6 +1,6 @@
 /*
- *  tests/Decimal.ts
- *  Polymprph
+ *  decimal.test.ts
+ *  Alkaline
  *
  *  Created by alpha on 2025/3/17.
  *  Copyright © 2025 alphaArgon.
@@ -8,8 +8,8 @@
 
 import test from "node:test";
 import assert from "node:assert";
-import { Decimal, decimal } from "@/Decimal";
-import { ComparisonResult } from "@/Base";
+import { Decimal, decimal } from "$alkaline/decimal";
+import { ComparisonResult } from "$alkaline/base";
 
 
 test("Decimal.zero", () => {

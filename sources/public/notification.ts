@@ -1,13 +1,13 @@
 /*
- *  Notification.ts
+ *  notification.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/8.
  *  Copyright © 2025 alphaArgon.
  */
 
-import type { Selector } from "./Base";
-import { $ } from "./_Internal";
+import type { Selector } from "./base";
+import { $ } from "../private/symbols";
 
 
 declare const subtype: unique symbol;

@@ -1,13 +1,13 @@
 /*
- *  Decimal.ts
+ *  decimal.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/16.
  *  Copyright © 2025 alphaArgon.
  */
 
-import { $ } from "./_Internal";
-import { ComparisonResult, CustomComparable, CustomEquatable } from "./Base";
+import { $ } from "../private/symbols";
+import { ComparisonResult, CustomComparable, CustomEquatable } from "./base";
 
 
 /** Returns a decimal from a string representation. Trailing zeros are kept. */

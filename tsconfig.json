@@ -9,12 +9,11 @@
         "allowSyntheticDefaultImports": true,
         "lib": ["es2021"],
         "target": "es2021",
+        "moduleResolution": "node",
         "declaration": true,
         "incremental": true,
-        "sourceMap": true,
-
         "paths": {
-            "@/*": ["./src/*"],
+            "$alkaline/*": ["./sources/public/*"],  //  Used by test cases.
         }
-    }
+    },
 }

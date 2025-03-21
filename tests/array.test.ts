@@ -1,6 +1,6 @@
 /*
- *  tests/array.ts
- *  Polymprph
+ *  array.test.ts
+ *  Alkaline
  *
  *  Created by alpha on 2025/3/4.
  *  Copyright © 2025 alphaArgon.
@@ -9,13 +9,14 @@
 import test from "node:test";
 import assert from "node:assert";
 
-import { Notification, NotificationCenter } from "@/Notification";
-import { reactive, ReactiveArray } from "@/Reactive";
-import { arrayDiff, ArrayDiff } from "@/Diffing";
-import { RangeSet } from "@/RangeSet";
-import { equals } from "@/Base";
-import { repeated } from "@/Repeated";
-import { Point } from "./Base";
+import { Notification, NotificationCenter } from "$alkaline/notification";
+import { reactive, ReactiveArray } from "$alkaline/reactive";
+import { arrayDiff, ArrayDiff } from "$alkaline/diffing";
+import { RangeSet } from "$alkaline/range-set";
+import { equals } from "$alkaline/base";
+import { repeated } from "$alkaline/repeated";
+
+import { Point } from "./base.test";
 
 
 let receiver = {

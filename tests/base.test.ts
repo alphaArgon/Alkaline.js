@@ -1,6 +1,6 @@
 /*
- *  tests/Base.ts
- *  Polymprph
+ *  base.test.ts
+ *  Alkaline
  *
  *  Created by alpha on 2025/3/10.
  *  Copyright © 2025 alphaArgon.
@@ -8,7 +8,8 @@
 
 import test from "node:test";
 import assert from "node:assert";
-import { equals } from "@/Base";
+
+import { equals } from "$alkaline/base";
 
 
 export class Point {

@@ -1,5 +1,5 @@
 /*
- *  Result.ts
+ *  result.test.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/18.
@@ -9,7 +9,7 @@
 import test from "node:test";
 import assert from "node:assert";
 
-import { Result } from "@/Result";
+import { Result } from "$alkaline/result";
 
 
 test("Result creation", () => {

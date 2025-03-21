@@ -1,12 +1,12 @@
 /*
- *  _RunArray.ts
+ *  run-array.ts
  *  Alkaline
  *
  *  Created by alpha on 2024/12/28.
  *  Copyright © 2024 alphaArgon.
  */
 
-import { Indirect } from "./Base";
+import type { Indirect } from "../public/base";
 
 
 export type _Run<T> = {length: number, value: T};
