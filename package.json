@@ -5,6 +5,20 @@
     "description": "A library for common JavaScript utilities",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^22.5.4"
+        "@types/node": "^22.5.4",
+        "tsx": "^4.19.3"
+    },
+    "scripts": {
+        "clean": "rm -rf distribution",
+        "build": "tsc -p tsconfig.build.json && npm run generate-umbrella && npm run resolve-imports",
+        "prepublish": "npm run build",
+        "test": "node scripts/run-all-tests.js tests",
+        "fix-header-comment": "node scripts/fix-header-comment.js -n Alkaline -d sources/public -d sources/private -d tests -d scripts",
+        "generate-umbrella": "node scripts/generate-umbrella.js distribution/index.js distribution/public",
+        "resolve-imports": "node scripts/resolve-imports.js distribution/**/*.js"
+    },
+    "exports": {
+        ".": "./distribution/index.js",
+        "./*": "./distribution/public/*.js"
     }
 }
