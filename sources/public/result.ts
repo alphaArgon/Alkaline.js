@@ -6,34 +6,58 @@
  *  Copyright © 2025 alphaArgon.
  */
 
+import { $ } from "../private/symbols";
 
+
+let _voidSuccess: Result<void, never> | null = null;
+let _voidFailure: Result<never, void> | null = null;
+
+
+/** An immutable result that is either a success or a failure. */
 export class Result<Success, Failure> {
 
-    readonly value: Success | Failure;
-    readonly isFailure: boolean;
+    public readonly value: Success | Failure;
+    public readonly isFailure: boolean;
 
-    private constructor() {
-        throw new Error("Use `Result.success` or `Result.failure` to create a result.");
+    private constructor(passport: $, value: Success | Failure, asFailure: boolean) {
+        if (passport !== $) {
+            throw new Error("Use `Result.success` or `Result.failure` to create a result.");
+        }
+
+        this.value = value;
+        this.isFailure = asFailure;
     }
 
     /** Creates a successful result. */
-    public static success<Success>(value: Success): Result<Success, never> {
-        return Object.freeze<Result<Success, never>>({
-            value: value,
-            isFailure: false,
-            //@ts-expect-error
-            __proto__: Result.prototype,
-        });
+    public static success(): Result<void, never>;
+    public static success<Success>(value: Success): Result<Success, never>;
+    public static success(value?: any): Result<any, never> {
+        if (value !== undefined) {
+            return new Result<any, never>($, value, false);
+        }
+
+        if (_voidSuccess === null) {
+            _voidSuccess = new Result<void, never>($, undefined, false);
+            Object.freeze(_voidSuccess);
+        }
+
+        return _voidSuccess;
     }
 
-    /** Creates a successful result. */
-    public static failure<Failure>(value: Failure): Result<never, Failure> {
-        return Object.freeze<Result<never, Failure>>({
-            value: value,
-            isFailure: true,
-            //@ts-expect-error
-            __proto__: Result.prototype,
-        });
+    /** Creates a failed result. */
+    public static failure(): Result<never, void>;
+    public static failure<Failure>(value: Failure): Result<never, Failure>;
+    public static failure(value?: any): Result<never, any> {
+        if (value !== undefined) {
+            return new Result<never, any>($, value, true);
+        }
+
+        if (_voidFailure === null) {
+            _voidFailure = new Result<never, any>($, undefined, true);
+            Object.freeze(_voidFailure);
+        }
+
+        return _voidFailure;
     }
 
     /** Combines multiple results into a single tuple result. If any of the them failed, the

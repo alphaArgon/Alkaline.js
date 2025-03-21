@@ -9,3 +9,4 @@
 
 /** A symbol key for hiding internal properties. */
 export const $: unique symbol = Symbol("ivars");
+export type $ = typeof $;
