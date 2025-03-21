@@ -6,42 +6,8 @@
  *  Copyright © 2025 alphaArgon.
  */
 
-import { $ } from "../private/symbols";
 import { ComparisonResult, CustomComparable, CustomEquatable } from "./base";
-
-
-/** Returns a decimal from a string representation. Trailing zeros are kept. */
-export function decimal(rep: string): Decimal;
-
-/** Returns a decimal from a number and the number of places. */
-export function decimal(n: number, places: number): Decimal;
-
-/** Returns a decimal with the number of places automatically determined from the number. */
-export function decimal(n: number): Decimal;
-
-export function decimal(arg1: number | string): Decimal {
-    if (typeof arg1 === "string") {
-        return _makeFrozenDecimal(_makeFromRep(arg1));
-    }
-
-    if (!_isNumberSafe(arg1)) {
-        throw new Error("Use a string representation to initialize large decimals.");
-    }
-
-    if (arguments.length > 1) {
-        let places = arguments[1];
-        if (places !== ~~places || places < 0) {
-            throw new RangeError("Places must be a non-negative integer.");
-        }
-
-        let rep = arg1.toFixed(places);
-        return _makeFrozenDecimal(_makeFromRep(rep));
-    }
-
-    let rep = arg1.toPrecision(16);  //  16 is the length of `MAX_SAFE_INTEGER`.
-    rep = rep.replace(/.?0+$/, "");
-    return _makeFrozenDecimal(_makeFromRep(rep));
-}
+import { $ } from "../private/symbols";
 
 
 export type RoundingMethod = "round" | "ceil" | "floor" | "trunc";
@@ -61,16 +27,55 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
     [$]: _Existential;
 
-    private constructor() {
-        throw new Error("Use `decimal` to create a new instance.");
+    private constructor(passport: $, ext: _Existential) {
+        if (passport !== $) {
+            throw new Error("Use `Decimal.from` to create a new decimal.");
+        }
+
+        this[$] = ext;
     }
 
+    /** A zero integer decimal with no places. */
     public static get zero(): Decimal {
         if (_zeroDecimal === null) {
-            _zeroDecimal = decimal(0, 0);
+            _zeroDecimal = new Decimal($, {scaled: 0, places: 0});
+            Object.freeze(_zeroDecimal);
         }
 
         return _zeroDecimal;
+    }
+
+    /** Returns a decimal from a string representation. Trailing zeros are kept. */
+    public static from(rep: string): Decimal;
+
+    /** Returns a decimal from a number and the number of places. */
+    public static from(n: number, places: number): Decimal;
+
+    /** Returns a decimal with the number of places automatically determined from the number. */
+    public static from(n: number): Decimal;
+
+    public static from(arg1: number | string): Decimal {
+        if (typeof arg1 === "string") {
+            return new Decimal($, _makeFromRep(arg1));
+        }
+
+        if (!_isNumberSafe(arg1)) {
+            throw new Error("Use a string representation to initialize large decimals.");
+        }
+
+        if (arguments.length > 1) {
+            let places = arguments[1];
+            if (places !== ~~places || places < 0) {
+                throw new RangeError("Places must be a non-negative integer.");
+            }
+
+            let rep = arg1.toFixed(places);
+            return new Decimal($, _makeFromRep(rep));
+        }
+
+        let rep = arg1.toPrecision(16);  //  16 is the length of `MAX_SAFE_INTEGER`.
+        rep = rep.replace(/.?0+$/, "");
+        return new Decimal($, _makeFromRep(rep));
     }
 
     /** Returns the number of digits in the fractional part. */
@@ -111,7 +116,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
             ? _leftShift(this[$].scaled, deltaPlaces)
             : _rightShift(this[$].scaled, -deltaPlaces, roundMethod);
 
-        return _makeFrozenDecimal({scaled, places});
+        return new Decimal($, {scaled, places});
     }
 
     /** Returns whether the decimal’s integer part has at most the specified number of digits.
@@ -132,7 +137,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
     /** Returns the negated decimal. */
     public negated(): Decimal {
-        return _makeFrozenDecimal({scaled: -this[$].scaled, places: this[$].places});
+        return new Decimal($, {scaled: -this[$].scaled, places: this[$].places});
     }
 
     /** Returns the absolute value of the decimal. */
@@ -146,7 +151,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
         //  They are either both `number`s or both `bigint`s, but TypeScript cannot infer that.
         let scaled = _makeNumberIfSafe((as as any) + (bs as any));
-        return _makeFrozenDecimal({scaled, places});
+        return new Decimal($, {scaled, places});
     }
 
     /** Returns the difference of the two decimals. The number of places is the maximum of the two. */
@@ -155,7 +160,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
 
         //  They are either both `number`s or both `bigint`s, but TypeScript cannot infer that.
         let scaled = _makeNumberIfSafe((as as any) - (bs as any));
-        return _makeFrozenDecimal({scaled, places});
+        return new Decimal($, {scaled, places});
     }
 
     /** Returns the product of the two decimals. The number of places is the sum of the two. */
@@ -176,7 +181,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
             places = this[$].places + other[$].places;
         }
 
-        return _makeFrozenDecimal({scaled, places});
+        return new Decimal($, {scaled, places});
     }
 
     /** Returns the quotient of the two decimals. The number of places is unchanged, but the value
@@ -204,7 +209,7 @@ export class Decimal implements CustomEquatable, CustomComparable {
         }
 
         let scaled = _mixedDivide(dividend, divisor);
-        return _makeFrozenDecimal({scaled, places: this[$].places});
+        return new Decimal($, {scaled, places: this[$].places});
     }
 
     /** Returns whether the two decimals have the same value and places. */
@@ -276,15 +281,6 @@ type _Existential = {
 
     /** The number of digits in the fractional part */
     places: number;
-}
-
-
-function _makeFrozenDecimal(ext: _Existential): Decimal {
-    return Object.freeze<Decimal>({
-        [$]: Object.freeze(ext),
-        //@ts-expect-error
-        __proto__: Decimal.prototype,
-    });
 }
 
 

@@ -1,5 +1,5 @@
 /*
- *  decimal.test.ts
+ *  decimal.from.test.ts
  *  Alkaline
  *
  *  Created by alpha on 2025/3/17.
@@ -8,7 +8,7 @@
 
 import test from "node:test";
 import assert from "node:assert";
-import { Decimal, decimal } from "$alkaline/decimal";
+import { Decimal } from "$alkaline/decimal";
 import { ComparisonResult } from "$alkaline/base";
 
 
@@ -19,39 +19,39 @@ test("Decimal.zero", () => {
 });
 
 
-test("Decimal number initialization", () => {
-    let d = decimal(123.456, 3);
+test("Decimal.from number initialization", () => {
+    let d = Decimal.from(123.456, 3);
     assert.equal(d.toString(), "123.456");
 
-    d = decimal(123.456, 0);
+    d = Decimal.from(123.456, 0);
     assert.equal(d.toString(), "123");
 
-    d = decimal(123.456, 1);
+    d = Decimal.from(123.456, 1);
     assert.equal(d.toString(), "123.5");
 
-    d = decimal(1234.56, 0);
+    d = Decimal.from(1234.56, 0);
     assert.equal(d.toString(), "1235");
 
-    d = decimal(1234.56, 1);
+    d = Decimal.from(1234.56, 1);
     assert.equal(d.toString(), "1234.6");
 
-    d = decimal(1234.56, 2);
+    d = Decimal.from(1234.56, 2);
     assert.equal(d.toString(), "1234.56");
 
-    d = decimal(1e-20, 20);
+    d = Decimal.from(1e-20, 20);
     assert.equal(d.toString(), "0.00000000000000000001");
 
-    d = decimal(1e-20, 19);
+    d = Decimal.from(1e-20, 19);
     assert(d.isNumericEqual(Decimal.zero));
 });
 
 
-test("Decimal string initialization", () => {
-    let d = decimal("123.456");
+test("Decimal.from string initialization", () => {
+    let d = Decimal.from("123.456");
     assert.equal(d.toString(), "123.456");
     assert.equal(d.places, 3);
 
-    d = decimal("-0123.4560");
+    d = Decimal.from("-0123.4560");
     assert.equal(d.toString(), "-123.4560");
     assert.equal(d.places, 4);
     assert.equal(d.trimmedPlaces, 3);
@@ -60,12 +60,12 @@ test("Decimal string initialization", () => {
 });
 
 
-test("Decimal operations", () => {
-    assert(decimal(-0).isEqual(decimal(0)));
-    assert(decimal(-0).signum === 0);
+test("Decimal.from operations", () => {
+    assert(Decimal.from(-0).isEqual(Decimal.from(0)));
+    assert(Decimal.from(-0).signum === 0);
 
-    let a = decimal(12.345, 3);
-    let b = decimal(-678.90, 2);
+    let a = Decimal.from(12.345, 3);
+    let b = Decimal.from(-678.90, 2);
 
     assert.equal(a.toString(), "12.345");
     assert.equal(b.toString(), "-678.90");
@@ -102,9 +102,9 @@ test("Decimal operations", () => {
 });
 
 
-test("Decimal rounding", () => {
-    let posi = decimal("2.50");
-    let nega = decimal("-2.50");
+test("Decimal.from rounding", () => {
+    let posi = Decimal.from("2.50");
+    let nega = Decimal.from("-2.50");
 
     assert.equal(posi.toFixed(0, "round"), "3");
     assert.equal(nega.toFixed(0, "round"), "-2");  //  Not "-3".
@@ -118,31 +118,31 @@ test("Decimal rounding", () => {
 });
 
 
-test("Decimal BigInt support", () => {
+test("Decimal.from BigInt support", () => {
     let rep = "9".repeat(50) + "." + "9".repeat(50)
-    let d = decimal(rep);
+    let d = Decimal.from(rep);
     assert.equal(d.toString(), rep);
     assert.equal(d.places, 50);
 
-    let c = d.subtracting(decimal(1));
+    let c = d.subtracting(Decimal.from(1));
     assert.equal(c.toString(), "9".repeat(49) + "8." + "9".repeat(50));
-    assert(c.dividedBy(c).isEqual(decimal(1, 50)));
-    assert(c.dividedBy(c).toPlaces(0).isEqual(decimal(1)));
+    assert(c.dividedBy(c).isEqual(Decimal.from(1, 50)));
+    assert(c.dividedBy(c).toPlaces(0).isEqual(Decimal.from(1)));
 });
 
 
-test("Decimal bad initialization", () => {
-    assert.throws(() => decimal(NaN), Error);
-    assert.throws(() => decimal(Infinity), Error);
-    assert.throws(() => decimal("a"), Error);
+test("Decimal.from bad initialization", () => {
+    assert.throws(() => Decimal.from(NaN), Error);
+    assert.throws(() => Decimal.from(Infinity), Error);
+    assert.throws(() => Decimal.from("a"), Error);
 });
 
 
-test("Decimal fitting", () => {
+test("Decimal.from fitting", () => {
     assert(Decimal.zero.integerFitsIn(0));
-    assert(decimal("000.000").integerFitsIn(0));
+    assert(Decimal.from("000.000").integerFitsIn(0));
 
-    let d = decimal("123.456");
+    let d = Decimal.from("123.456");
     assert(!d.integerFitsIn(-1));
     assert(!d.integerFitsIn(0));
     assert(!d.integerFitsIn(2));
@@ -156,7 +156,7 @@ test("Decimal fitting", () => {
     assert(b.integerFitsIn(3));
     assert(b.integerFitsIn(6));
 
-    let p = decimal(999.999, 3);
+    let p = Decimal.from(999.999, 3);
     assert(p.integerFitsIn(3));
     assert(p.integerFitsIn(6));
 });
