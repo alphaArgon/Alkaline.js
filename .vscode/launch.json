@@ -1,11 +1,12 @@
 {
     "configurations": [
         {
-            "name": "tsx",
+            "name": "Run this file",
             "type": "node",
             "request": "launch",
-            "program": "${file}",
-            "runtimeExecutable": "tsx",
+
+            "args": ["--import", "./scripts/loader-register.js", "${file}"],
+
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "skipFiles": [

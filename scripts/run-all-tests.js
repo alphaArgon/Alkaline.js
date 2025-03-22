@@ -22,6 +22,8 @@ if (!testDir) {
     process.exit(1);
 }
 
+let loaderPath = "./" + Path.relative("./", Path.resolve(import.meta.dirname, "loader-register.js"));
+
 let first = true;
 
 for (let file of FS.readdirSync(testDir).sort()) {
@@ -33,8 +35,7 @@ for (let file of FS.readdirSync(testDir).sort()) {
     if (!first) {console.log();} else {first = false;}
     console.log(`Running ${Path.relative(process.cwd(), fullPath)}:`);
 
-    //  `tsx` is required as a dev dependency.
-    let status = spawnSync("npx", ["tsx", fullPath], {stdio: "inherit"}).status;
+    let status = spawnSync("node", ["--import", loaderPath, fullPath], {stdio: "inherit"}).status;
     if (status === 0) {continue;}
 
     //  The result should already been printed, so we just exit early.

@@ -8,6 +8,7 @@
 
 import FS from "fs";
 import Path from "path";
+import { resolveImportSpecifier } from "./loader.js";
 
 
 //  Check all relative imports (starting with `./`) in the given file, and add the extension
@@ -30,36 +31,19 @@ async function resolveImports(filePath) {
     let anyResolved = false;
 
     content = content.replace(importFromDot, (_, import_from, __, quoted) => {
-        let relativePath = dequote(quoted);
-        let foundPath = findImportPath(dirPath, relativePath);
-        if (foundPath === null) {
-            console.error(`Cannot resolve "${relativePath}" from "${filePath}"`);
-            process.exit(1);
-        }
+        let specifier = dequote(quoted);
 
-        if (relativePath !== foundPath) {
+        let resolved = resolveImportSpecifier(dirPath, specifier);
+        if (specifier !== resolved) {
             anyResolved = true;
         }
 
-        return import_from + enquote(foundPath);
+        return import_from + enquote(resolved);
     });
 
     if (anyResolved) {
         await FS.promises.writeFile(filePath, content);
     }
-}
-
-
-function findImportPath(dirPath, relativePath) {
-    for (let suffix of ["", ".js", ".ts", "/index.js", "/index.ts"]) {
-        let withExt = relativePath + suffix;
-        let fullPath = Path.resolve(dirPath, withExt);
-        if (FS.existsSync(fullPath) && !FS.lstatSync(fullPath).isDirectory()) {
-            return withExt;
-        }
-    }
-
-    return null;
 }
 
 
