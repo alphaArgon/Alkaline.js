@@ -5,7 +5,8 @@
     "description": "A library for common JavaScript utilities",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^22.5.4"
+        "@types/node": "^22.5.4",
+        "typescript": "^5.8.2"
     },
     "scripts": {
         "clean": "rm -rf distribution",
@@ -19,8 +20,5 @@
     "exports": {
         ".": "./distribution/index.js",
         "./*": "./distribution/public/*.js"
-    },
-    "dependencies": {
-        "typescript": "^5.8.2"
     }
 }
