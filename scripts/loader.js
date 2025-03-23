@@ -67,8 +67,11 @@ export function load(url, context, nextLoad) {
 
         let aliasesMap = options.compilerOptions.paths;
         if (aliasesMap !== undefined) {
-            let basePath = options.compilerOptions.baseUrl ?? Path.dirname(config.path);
-            basePath = Path.resolve(basePath);
+            //  FIXME: What if tsconfig.json is not in the root directory?
+            let basePath = Path.dirname(config.path);
+            if (options.compilerOptions.baseUrl) {
+                basePath = Path.resolve(basePath, options.compilerOptions.baseUrl);
+            }
 
             let dirPath = Path.dirname(path);
 
