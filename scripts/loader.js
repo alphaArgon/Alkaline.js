@@ -6,7 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
-import FS from "fs";
+import FS, { readSync } from "fs";
 import Path from "path";
 import { ModuleKind, transpileModule, findConfigFile, readConfigFile, parseJsonConfigFileContent, sys, isImportDeclaration, isExportDeclaration, isStringLiteral, visitEachChild, visitNode } from "typescript";
 import { fileURLToPath } from "url";
@@ -125,7 +125,9 @@ function findTSConfig(searchPath) {
 
 
 function isRelativePath(path) {
-    return path.startsWith("./") || path.startsWith("../");
+    if (path === "." || path === "..") {return true;}
+    if (path.startsWith("./") || path.startsWith("../")) {return true;}
+    return false;
 }
 
 
