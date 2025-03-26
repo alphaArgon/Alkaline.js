@@ -6,6 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
+import { nextTick } from "../private/next-tick";
 import { $ } from "../private/symbols";
 
 
@@ -69,6 +70,16 @@ export class RefCounted<T> {
         }
     }
 
+    /** Releases the object when the current autorelease pool is drained. If there is no autorelease
+      * pool, an autorelease pool that will be drained on the next tick will be created. */
+    public autorelease(): void {
+        if (this[$].count === 0) {
+            throw new Error("The value has already been released.");
+        }
+
+        _ensurePool().push(this);
+    }
+
     /** Finalizes the object. By default, it calls the function passed to the constructor.
       * Subclasses can override this method and the constructor to hide implementation details. */
     protected finalize(): void {
@@ -78,4 +89,40 @@ export class RefCounted<T> {
 
         this[$].finalize(this[$].value!);
     }
+}
+
+
+/** Executes the body in an autorelease pool. */
+export function autoreleasepool(body: () => void) {
+    _beginPool();
+    body();
+    _endPool();
+}
+
+
+let _currentPool: RefCounted<any>[] | undefined = undefined;
+let _parentPools: RefCounted<any>[][] = [];
+
+
+function _beginPool(): void {
+    _parentPools.push(_currentPool!);
+    _currentPool = [];
+}
+
+function _endPool(): void {
+    for (let object of _currentPool!) {
+        object.release();
+    }
+
+    //  `_parentPools` could be empty; that’s OK. The pool is the root pool.
+    _currentPool = _parentPools.pop();
+}
+
+function _ensurePool(): RefCounted<any>[] {
+    if (_currentPool === undefined) {
+        _currentPool = [];
+        nextTick(_endPool);
+    }
+
+    return _currentPool;
 }
