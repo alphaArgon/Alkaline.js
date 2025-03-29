@@ -8,5 +8,5 @@
 
 
 /** A symbol key for hiding internal properties. */
-export const $: unique symbol = Symbol("ivars");
+export const $: unique symbol = Symbol("alkaline.ivars");
 export type $ = typeof $;

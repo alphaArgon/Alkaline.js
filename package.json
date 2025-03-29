@@ -14,11 +14,12 @@
         "prepublish": "npm run build",
         "test": "node scripts/run-all-tests.js tests",
         "fix-header-comment": "node scripts/fix-header-comment.js -n Alkaline -d sources/public -d sources/private -d tests -d scripts",
-        "generate-umbrella": "node scripts/generate-umbrella.js distribution/index.js distribution/public",
+        "generate-umbrella": "node scripts/generate-umbrella.js distribution/index.js distribution/public && echo > distribution/index.d.ts",
         "resolve-imports": "node scripts/resolve-imports.js distribution/**/*.js"
     },
     "exports": {
         ".": "./distribution/index.js",
-        "./*": "./distribution/public/*.js"
+        "./*": "./distribution/public/*.js",
+        "./scripts/*": "./scripts/*.js"
     }
 }

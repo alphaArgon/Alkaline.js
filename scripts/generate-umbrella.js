@@ -12,7 +12,7 @@ import Path from "path";
 
 //  Generate an umbrella header — a file that exports all the public modules in the given directory.
 
-let dotExt = /\.test\.[jt]s$/;
+let dotExt = /\.[jt]s$/;
 
 
 let outPath = process.argv[2];

@@ -9,9 +9,8 @@
         "allowSyntheticDefaultImports": true,
         "lib": ["es2021"],
         "target": "es2021",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "declaration": true,
-        "incremental": true,
         "paths": {
             //  Used by test cases.
             "$alkaline/*": ["./sources/public/*"],
