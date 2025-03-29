@@ -31,3 +31,7 @@ export function resolveBackwardsIndex(index: unknown, length: number, present: b
     let i = toIntegerOrInfinity(index);
     return i < 0 ? length + i : Math.min(i, length - 1);
 }
+
+
+
+export const isInStrictMode = (function (this: any) {return this === undefined;})();

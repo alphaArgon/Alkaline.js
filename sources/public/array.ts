@@ -6,6 +6,8 @@
  *  Copyright © 2025 alphaArgon.
  */
 
+import { isInStrictMode } from "$alkaline.private/es-utils";
+
 
 /** Returns whether the given two arrays are equal compared by the given function. */
 export function arrayEquals<T>(a: readonly T[], b: readonly T[], equals: (a: T, b: T) => boolean): boolean {
@@ -56,4 +58,44 @@ export function arrayCompactMap<T, U>(array: readonly T[], transform: (element: 
     }
 
     return result;
+}
+
+
+/** Returns a new readonly array comtaining all transformed elements. */
+export function arrayLazyMap<T, U>(array: readonly T[], transform: (element: T, index: number, array: readonly T[]) => U): readonly U[] {
+    return new Proxy(array, _lazyMapProxy(transform));
+}
+
+
+const _lazyMapProxies: WeakMap<Function, ProxyHandler<readonly any[]>> = new WeakMap();
+
+function _lazyMapProxy(transform: Function): ProxyHandler<readonly any[]> {
+    let proxy = _lazyMapProxies.get(transform);
+    if (proxy) {return proxy;}
+
+    proxy = {
+        set(array, key, receiver): boolean {
+            return _checkStrictMode("Cannot set a key of a readonly array.");
+        },
+
+        get(array, key, receiver) {
+            let index = Number(key);
+            if (index >= 0 && index < array.length && Number.isInteger(index)) {
+                return transform(array[index], index, array);
+            }
+
+            return Reflect.get(array, key, receiver);
+        }
+    };
+
+    _lazyMapProxies.set(transform, proxy);
+    return proxy;
+}
+
+function _checkStrictMode(error: string): boolean {
+    if (isInStrictMode) {
+        throw TypeError(error);
+    }
+
+    return false;
 }

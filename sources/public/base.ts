@@ -9,6 +9,10 @@
 import { arrayEquals } from "./array";
 
 
+declare const subtype: unique symbol;
+export type Subtype<T, U> = T & {[subtype]?: U};
+
+
 //  MARK: - Equatability
 
 

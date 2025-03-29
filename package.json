@@ -14,7 +14,7 @@
         "prepublish": "npm run build",
         "test": "node scripts/run-all-tests.js tests",
         "fix-header-comment": "node scripts/fix-header-comment.js -n Alkaline -d sources/public -d sources/private -d tests -d scripts",
-        "generate-umbrella": "node scripts/generate-umbrella.js distribution/index.js distribution/public && echo > distribution/index.d.ts",
+        "generate-umbrella": "node scripts/generate-umbrella.js distribution/index.js distribution/public && cd distribution && rm -f index.d.ts && ln -s index.js index.d.ts",
         "resolve-imports": "node scripts/resolve-imports.js distribution/**/*.js"
     },
     "exports": {

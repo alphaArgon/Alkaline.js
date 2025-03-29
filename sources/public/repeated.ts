@@ -6,7 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
-import { resolveBackwardsIndex, resolveIndex } from "../private/es-utils";
+import { isInStrictMode, resolveBackwardsIndex, resolveIndex } from "../private/es-utils";
 
 
 /** Returns a readonly array that repeats the element for the given times.
@@ -138,20 +138,8 @@ function *_arrayKeys(length: number): Generator<string | symbol> {
 }
 
 
-let _inStrictMode = null as boolean | null;
-
 function _checkStrictMode(error: string): boolean {
-    if (_inStrictMode === null) {
-        _inStrictMode = false;
-
-        try {
-            (_emptyArray as any[]).length = 1;
-        } catch {
-            _inStrictMode = true;
-        }
-    }
-
-    if (_inStrictMode) {
+    if (isInStrictMode) {
         throw TypeError(error);
     }
 

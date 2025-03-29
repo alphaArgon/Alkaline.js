@@ -6,12 +6,11 @@
  *  Copyright © 2025 alphaArgon.
  */
 
-import type { Selector } from "./base";
+import type { Selector, Subtype } from "./base";
 import { $ } from "../private/symbols";
 
 
-declare const subtype: unique symbol;
-export type NotificationName<UserInfo = void> = (string | symbol) & {[subtype]?: UserInfo};
+export type NotificationName<UserInfo = void> = Subtype<string | symbol, UserInfo>;
 
 
 export type Notification<UserInfo = void> = {
