@@ -12,7 +12,7 @@ const _readonlyCaches: WeakMap<object, Readonly<object>> = new WeakMap();
 
 /** Returns a readonly view to the given object. Calling this function multiple times will return
   * the same reference. If the given object is modified, the returned view can reflect the changes. */
-export function readonlyView<T extends object>(object: T): Readonly<T> {
+export function readonlyView<T extends Record<any, any> | readonly any[]>(object: T): Readonly<T> {
     let cache = _readonlyCaches.get(object);
     if (cache === undefined) {
         cache = Object.isFrozen(object) ? object : Object.freeze(Object.create(object));

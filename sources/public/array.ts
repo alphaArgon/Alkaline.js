@@ -6,7 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
-import { isInStrictMode } from "$alkaline.private/es-utils";
+import { isInStrictMode, supportsWeakRef } from "$alkaline.private/es-utils";
 
 
 /** Returns whether the given two arrays are equal compared by the given function. */
@@ -42,6 +42,14 @@ export function arrayShuffle<T>(array: T[]): void {
         let j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+
+/** Sorts the elements of the array stably in place. */
+export function arrayStableSort<T>(array: T[], compare: (a: T, b: T) => number): void {
+    //  `WeakRef` was introduced after the requirement of `Array#sort` being stable.
+    if (supportsWeakRef) {array.sort(compare);}
+    else {_mergeSort(array, compare);}
 }
 
 
@@ -98,4 +106,43 @@ function _checkStrictMode(error: string): boolean {
     }
 
     return false;
+}
+
+
+function _mergeSort<T>(array: T[], compare: (a: T, b: T) => number): void {
+    let length = array.length;
+    if (length <= 1) {return;}
+
+    let m = Math.floor(length / 2);
+    let a = array.slice(0, m);
+    let b = array.slice(m);
+    _mergeSort(a, compare);
+    _mergeSort(b, compare);
+
+    let n = length - m;
+
+    let i = 0, j = 0, k = 0;
+    while (i < m && j < n) {
+        let v = a[i], w = b[j];
+        if (compare(v, w) <= 0) {
+            array[k] = v;
+            i += 1;
+        } else {
+            array[k] = w;
+            j += 1;
+        }
+        k += 1;
+    }
+
+    while (i < m) {
+        array[k] = a[i];
+        i += 1
+        k += 1;
+    }
+
+    while (j < n) {
+        array[k] = b[j];
+        j += 1;
+        k += 1;
+    }
 }

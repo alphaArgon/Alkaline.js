@@ -33,5 +33,16 @@ export function resolveBackwardsIndex(index: unknown, length: number, present: b
 }
 
 
-
 export const isInStrictMode = (function (this: any) {return this === undefined;})();
+
+
+export const supportsBigInt = (() => {
+    try {BigInt; return true;}
+    catch {return false;}
+})();
+
+
+export const supportsWeakRef = (() => {
+    try {WeakRef; return true;}
+    catch {return false;}
+})();

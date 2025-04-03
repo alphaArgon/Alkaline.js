@@ -7,6 +7,7 @@
  */
 
 import type { Selector, Subtype } from "./base";
+import { supportsWeakRef } from "../private/es-utils";
 import { $ } from "../private/symbols";
 
 
@@ -60,7 +61,7 @@ export class NotificationCenter {
       * By default, the flag is `false`. If the environment doesn’t support `WeakMap`, the flag
       * is ignored. */
     public constructor(weakObservers: boolean = false) {
-        weakObservers &&= "WeakRef" in globalThis;
+        weakObservers &&= supportsWeakRef;
 
         this[$] = {
             observations: new WeakMap(),

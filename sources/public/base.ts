@@ -6,6 +6,7 @@
  *  Copyright © 2025 alphaArgon.
  */
 
+import { supportsBigInt } from "$alkaline.private/es-utils";
 import { arrayEquals } from "./array";
 
 
@@ -65,9 +66,11 @@ for (let constructor of [Boolean, Number, String, Symbol, Date]) {
     Object.defineProperty(constructor.prototype, valueOfSpecies, {value: constructor});
 }
 
-try {  //  `BigInt` is not fully supported, nor `globalThis`. So we use a try-catch block.
+
+if (supportsBigInt) {
+    //  If `BigInt` is not supported, nor is `globalThis`.
     Object.defineProperty(BigInt.prototype, valueOfSpecies, {value: BigInt});
-} catch {}  //  Let it throw.
+}
 
 
 /** Any type whose equality can be checked by `equals`, which include primitive values and its
